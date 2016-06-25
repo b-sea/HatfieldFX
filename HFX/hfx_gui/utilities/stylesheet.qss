@@ -1,0 +1,162 @@
+QWidget {
+    color: #7E9BA3;
+    background: #171717;
+    background-color: #171717;
+    border: 0px;
+    border-radius: 8px;
+    outline: 0;
+}
+
+QLineEdit, QTextEdit {
+    border: 1px;
+    padding: 0 8px;
+}
+
+QHeaderView {
+}
+
+QHeaderView::section {
+    background: #171717;
+    padding-left: 4px;
+    border: 0px;
+    border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.05 #40AD00, stop:1 #171717);
+}
+
+QAbstractItemView {
+    selection-background-color: #171717;
+    border-radius: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+QAbstractItemView::item:focus {
+    selection-background-color: #171717;
+    border-radius: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+QAbstractItemView::item:selected {
+    color: #40AD00;
+    border-radius: 8px;
+    border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    border-right: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+}
+
+QAbstractItemView::item:hover {
+    border-radius: 8px;
+    border-left: 1px dotted #C2C2C2;
+}
+
+QAbstractItemView::item:disabled {
+    color: #C2C2C2;
+    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.1 #40AD00, stop:1 #171717);
+    background: #171717;
+}
+
+QDockWidget {
+    color: #C2C2C2;
+    font-size: 10px;
+}
+
+QDockWidget::title {
+    border: 0px;
+    background: #171717;
+    text-align: left;
+    padding-left: 10px;
+}
+
+QMainWindow::separator {
+    background: #171717;
+    color: #171717;
+    width: 5px;
+    height: 5px;
+}
+
+QMainWindow::separator:vertical:hover {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+}
+
+QMainWindow::separator:horizontal:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+}
+
+QMenu {
+    margin: 2px;
+}
+
+QMenu::item {
+    color: #7E9BA3;
+    border-radius: 8px;
+    border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                stop:0 #171717, stop: 0.8 #40AD00, stop:1 #171717);
+    selection-background-color: #171717;
+    selection-color: #40AD00;
+    text-align: center;
+    padding: 2px 5px 2px 20px;
+}
+
+QMenu::item:selected {
+    color: #40AD00;
+    border-radius: 8px;
+    border-left: 2px solid #40AD00;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+QComboBox {
+    color: #7E9BA3;
+    padding: 5px 18px 1px 3px;
+    min-width: 6em;
+    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                                stop:0 #171717, stop: 0.1 #C2C2C2, stop:1 #171717);
+    padding-top: 3px;
+    padding-left: 15px;
+    text-align: center;
+}
+
+QComboBox:hover {
+    color: #7E9BA3;
+    padding: 5px 18px 1px 3px;
+    min-width: 6em;
+    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                                stop:0 #171717, stop: 0.1 #40AD00, stop:1 #171717);
+    padding-top: 3px;
+    padding-left: 15px;
+    text-align: center;
+}
+
+QComboBox:on {
+    padding-top: 3px;
+    padding-left: 15px;
+    text-align: center;
+}
+
+QComboBox::drop-down {
+    color: #40AD00;
+    border-radius: 8px;
+    border-left: 0px dotted #40AD00;
+    border-right: 0px dotted #40AD00;
+    text-align: center;
+}
+
+QComboBox QAbstractItemView {
+    color: #7E9BA3;
+    border-radius: 8px;
+    border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                stop:0 #171717, stop: 0.8 #40AD00, stop:1 #171717);
+    selection-background-color: #171717;
+    selection-color: #40AD00;
+    padding: 2px 5px 2px 20px;
+    text-align: center;
+}
+
