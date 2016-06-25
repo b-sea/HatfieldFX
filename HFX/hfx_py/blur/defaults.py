@@ -7,11 +7,8 @@ import blur_function
 import blur_talks
 
 # python imports
-import os
-import sys
 import inspect
 import traceback
-from functools import partial
 
 
 def applicationName(data):

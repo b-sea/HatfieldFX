@@ -2,7 +2,7 @@
 from PySide import QtGui, QtCore
 
 # utilities
-from utilities import instance, applyHFXStyle, toHFX
+from utilities import instance, applyHFXStyle
 
 # python imports
 from os.path import basename

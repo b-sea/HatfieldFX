@@ -1,11 +1,10 @@
 
 # python imports
-import os
 import json
+import os
 import subprocess
 import sys
 import traceback
-
 
 __all__ = [
     'environments',
