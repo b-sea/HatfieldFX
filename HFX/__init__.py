@@ -4,7 +4,6 @@ import sys
 
 # package imports
 from hfx_py import *
-from package_utils import *
 
 __version__ = '0.2.0'
 
@@ -27,8 +26,7 @@ if 'HFX_GUI' in os.environ.keys() or HFX_APP is None:
     print
 
     # HFX namespace
-    from gui import *
-    import hfx_gui
+    from hfx_gui import *
 
 if HFX_APP is not None:
     loadPipeline(HFX_APP)

@@ -38,6 +38,7 @@ __all__ = [
 Vertical = QtGui.QVBoxLayout
 Horizontal = QtGui.QHBoxLayout
 
+
 class _hfx(QtGui.QWidget):
     """
     --container widget--
