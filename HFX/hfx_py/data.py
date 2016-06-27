@@ -7,7 +7,6 @@ Back end is tinydb
 import tinydb
 
 # python imports
-import logging
 from tempfile import NamedTemporaryFile
 
 
