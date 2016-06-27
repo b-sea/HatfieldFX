@@ -5,7 +5,7 @@ from MultiLineEdit import MultiLineEdit
 from OptionBox import OptionBox
 from Tree import Tree
 from Widget import Widget
-from utilities import Horizontal, Vertical
+from utilities import Horizontal, Vertical, guiKitVersion
 
 
 # predefined widgets

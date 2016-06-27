@@ -1,9 +1,10 @@
 # PySide import
-from PySide import QtGui, QtCore
+from PySide import QtGui, QtCore, __version__
 
 # python imports
 from os.path import basename
 from functools import partial
+import logging
 
 # hfx gui imports
 import instance
@@ -14,8 +15,20 @@ __all__ = [
     'toHFX',
     'applyHFXStyle',
     'Vertical',
-    'Horizontal'
+    'Horizontal',
+    'guiKitVersion'
 ]
+
+
+def guiKitVersion():
+    """
+    Get the version of PySide that the gui kit is using.
+    :return:
+    """
+    logging.info('PySide')
+    logging.info('Version: ' + __version__)
+    logging.info('Compiled with: Qt ' + QtCore.__version__)
+    logging.info('Using: Qt ' + QtCore.qVersion())
 
 
 # Functions required for HFX Widgets conversion:
