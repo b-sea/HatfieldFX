@@ -61,10 +61,10 @@ class StaticDB(_db):
         :return:
         """
         # correct location name
-        if not location.endswith('.db'):
-            location += '.db'
+        if not name.endswith('.db'):
+            name += '.db'
 
-        super(StaticDB, self).__init__(name, location)
+        super(StaticDB, self).__init__(name, location + '/' + name)
 
 
 class TransientDB(_db):

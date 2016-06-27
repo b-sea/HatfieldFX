@@ -6,6 +6,12 @@ Pure python helpers
 import subprocess
 
 
+__all__ = [
+    'python',
+    'Singleton'
+]
+
+
 def python(pathToFile):
     """
     Launch an app or file with python.
@@ -17,9 +23,18 @@ def python(pathToFile):
 
 
 class Singleton(type):
-    _instances = {}
+
+    singles = {}
 
     def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+        """
+        Override for new instances.
+        :param name:
+        :param parents:
+        :param dct:
+        :return:
+        """
+        if cls not in cls.singles:
+            cls.singles[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+
+        return cls.singles[cls]

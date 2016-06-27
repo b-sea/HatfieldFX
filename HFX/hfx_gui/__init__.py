@@ -7,7 +7,3 @@ from Tree import Tree
 from Widget import Widget
 from utilities import Horizontal, Vertical, guiKitVersion
 
-
-# predefined widgets
-from pipeline_widgets import *
-

@@ -6,6 +6,10 @@ Convenience functions for system directory navigation.
 import os
 import sys
 
+# package imports
+import data
+
+
 __all__ = [
     'Jumper'
 ]
@@ -15,6 +19,9 @@ class Jumper(object):
     """
     Jumper allows for quick navigation around the system. Similar to using the terminal or command prompt.
     """
+
+    TransientDB = data.TransientDB
+    StaticDB = data.StaticDB
 
     def __init__(self, path):
         """
@@ -30,6 +37,19 @@ class Jumper(object):
         # set instance variables
         self._startingPoint = path
         self._currentPath = path
+
+    def mkdb(self, name, db=StaticDB):
+        """
+        Create a db at this location. By default this will create a Static DB. You can create a temp Transient DB
+        instead. This will be created in the temp directory instead.
+        :param name:
+        :param db:
+        :return:
+        """
+        if isinstance(db, self.TransientDB):
+            return data.TransientDB(name)
+        else:
+            return data.StaticDB(name, self.cwd())
 
     def cd(self, directory):
         """

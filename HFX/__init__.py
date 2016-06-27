@@ -6,20 +6,20 @@ This should create the HFX namespace as well as handle the gui imports and pytho
 __author__ = 'Alex Hatfield'
 __version__ = '0.3.0'
 
-HFX_APP = None
+# package imports
+from hfx_py import *
 
 # python imports
 import sys
 import logging
 
-# package imports
-from hfx_py import *
+logging.basicConfig()
 
-logging.basicConfig(level=logging.INFO)
-
-sysNav = Jumper(__file__)
-sysNav.cd('site')
-sysNav.addPathToSys()
+# establish navigation jumper.
+HFX_NAV = Jumper(__file__)
+HFX_NAV.cd('site')
+HFX_NAV.addPathToSys()
+HFX_NAV.backToStart()
 
 # product information
 logging.info('product: HFX')
@@ -40,4 +40,3 @@ try:
 except ImportError, e:
     logging.warning('Cant load HFX gui tools.')
     logging.error('\t' + str(e))
-
