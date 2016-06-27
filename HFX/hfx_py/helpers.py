@@ -1,5 +1,7 @@
 """
 Pure python helpers
+
+Meant to help with python interaction.
 """
 
 # python imports
