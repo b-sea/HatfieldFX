@@ -1,13 +1,24 @@
+"""
+Initial load up.
+
+This should create the HFX namespace as well as handle the gui imports and python helpers.
+"""
+__author__ = 'Alex Hatfield'
+__version__ = '0.2.0'
+
+HFX_APP = None
 
 # python imports
+import os
 import sys
 
 # package imports
 from hfx_py import *
 
-__version__ = '0.2.0'
+sysNav = Jumper(__file__)
+sysNav.cd('site')
+sysNav.addPathToSys()
 
-HFX_APP = None
 
 if 'HFX_APP' in os.environ:
     HFX_APP = os.environ['HFX_APP']
@@ -27,6 +38,3 @@ if 'HFX_GUI' in os.environ.keys() or HFX_APP is None:
 
     # HFX namespace
     from hfx_gui import *
-
-if HFX_APP is not None:
-    loadPipeline(HFX_APP)
