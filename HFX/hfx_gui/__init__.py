@@ -1,3 +1,7 @@
+"""
+Init
+"""
+
 from Application import Application
 from LineEdit import LineEdit
 from List import List
