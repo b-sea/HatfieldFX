@@ -18,6 +18,8 @@ class Tree(QtGui.QTreeWidget):
     cyan = QtCore.Qt.darkCyan
     magenta = QtCore.Qt.darkMagenta
 
+    RogueItem = 2
+
     def __init__(self,
                  label=None,
                  headers=None,
@@ -47,7 +49,7 @@ class Tree(QtGui.QTreeWidget):
         if label is not None:
             labelWidget = QtGui.QLabel(self)
             labelWidget.setText(label)
-            self.addWidget(labelWidget, 0)
+            self.addHeader(labelWidget)
 
         # hide headers
         self.setHeaderHidden(hideHeaders)
@@ -185,6 +187,12 @@ class Tree(QtGui.QTreeWidget):
         """
         self.sortByColumn(column, QtCore.Qt.AscendingOrder)
 
+    def createItem(self, *args, **kwargs):
+        """
+        :return:
+        """
+        self.addItem(parent=self.RogueItem, *args, **kwargs)
+
     def addItem(self, labels, parent=None, bgColor=None, fgColor=None, widgets=None, icons=None):
         """
         Add an item to the Tree
@@ -197,14 +205,22 @@ class Tree(QtGui.QTreeWidget):
         :return:
         """
         # determine parent
-        if parent is None:
+        if parent is self.RogueItem and not isinstance(labels, QtGui.QTreeWidgetItem):
+            parent = None
+        elif parent is None:
             parent = self
+        else:
+            pass
+
+        if isinstance(labels, QtGui.QTreeWidgetItem):
+            parent.addChild(labels)
+            return
 
         # create item
         item = QtGui.QTreeWidgetItem(parent)
 
-
         self.setIconSize(QtCore.QSize(20, 20))
+
         # register new item
         self._items.append(item)
 

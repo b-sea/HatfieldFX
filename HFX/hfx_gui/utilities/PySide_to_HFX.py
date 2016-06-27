@@ -70,6 +70,7 @@ class _hfx(QtGui.QWidget):
         self._contextFunctions = {}
         self._contextMap = []
         self._mainWidget = mainWidget
+        self._funcBar = QtGui.QToolBar()
 
         # assign hfx layout functions
         self._mainWidget._hfx = self
@@ -87,11 +88,19 @@ class _hfx(QtGui.QWidget):
         self._mainWidget.contextMenuEvent = self.hfxMenuEvent
         self._mainWidget.getToolTip = self.getToolTip
         self._mainWidget.show = self.show
+        self._mainWidget.addHeader = self.addHeader
+        self._mainWidget.addFooter = self.addFooter
 
         # define the layout type
-        self._layout = layout(self)
+        self._HeaderAndFooter = Vertical(self)
+        self._layout = layout()
+
+        self._HeaderAndFooter.addLayout(self._layout)
+
+        self._HeaderAndFooter.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.setLayout(self._layout)
+
+        self.setLayout(self._HeaderAndFooter)
 
         # add the main widget to the layout
         self._layout.addWidget(self._mainWidget)
@@ -100,28 +109,51 @@ class _hfx(QtGui.QWidget):
         applyHFXStyle(self)
         applyHFXStyle(self._mainWidget)
 
-    def show(self):
-        if QtGui.qApp.applicationName() == 'python':
-            toolBar = QtGui.QToolBar()
-            toolBar.setOrientation(QtCore.Qt.Vertical)
-            for function in sorted(self.functions()):
-                func = self.functions()[function]
-                if isinstance(func, QtGui.QWidget):
-                    toolBar.addWidget(func)
-                else:
-                    action = toolBar.addAction(basename(function))
-                    action.triggered.connect(func)
+    def addHeader(self, widget):
+        """
+        Add a widget to the header of this widget.
+        :param widget:
+        :return:
+        """
+        widget = instance.validateWidgetLayout(widget)
+        self._HeaderAndFooter.insertWidget(0, widget)
 
-            for widget in self.widgets():
-                for function in sorted(widget.functions()):
-                    func = widget.functions()[function]
+        self._widgets.append(widget)
+
+    def addFooter(self, widget):
+        """
+        Add a widget to the footer of this widget.
+        :param widget:
+        :return:
+        """
+        widget = instance.validateWidgetLayout(widget)
+        self._HeaderAndFooter.addWidget(widget)
+
+        self._widgets.append(widget)
+
+    def show(self):
+        if QtGui.qApp.applicationName() == 'python' or QtGui.qApp.applicationName() == '':
+            if self._funcBar is None:
+                self._funcBar = QtGui.QToolBar()
+                self._funcBar.setOrientation(QtCore.Qt.Vertical)
+                for function in sorted(self.functions()):
+                    func = self.functions()[function]
                     if isinstance(func, QtGui.QWidget):
-                        toolBar.addWidget(func)
+                        self._funcBar.addWidget(func)
                     else:
-                        action = toolBar.addAction(basename(function))
+                        action = self._funcBar.addAction(basename(function))
                         action.triggered.connect(func)
 
-            self._layout.insertWidget(0, toolBar)
+                for widget in self.widgets():
+                    for function in sorted(widget.functions()):
+                        func = widget.functions()[function]
+                        if isinstance(func, QtGui.QWidget):
+                            self._funcBar.addWidget(func)
+                        else:
+                            action = self._funcBar.addAction(basename(function))
+                            action.triggered.connect(func)
+
+                self._layout.insertWidget(0, self._funcBar)
         instance.waitTillClose(self)
 
     def hfxMenuEvent(self, event):

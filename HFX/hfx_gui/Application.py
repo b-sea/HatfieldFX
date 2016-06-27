@@ -162,6 +162,7 @@ class Application(QtGui.QMainWindow):
         self._currentPage = None
         self._widgetBar = QtGui.QToolBar()
         self._widgetBar.setOrientation(QtCore.Qt.Vertical)
+        self._setStartPage = None
 
         # default widgets
         self._navBar = ApplicationNavigation(self)
@@ -186,6 +187,10 @@ class Application(QtGui.QMainWindow):
         self._functionBar.itemClicked.connect(self.runFunction)
 
         self.layout().setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+
+    def _startPage(self):
+        if self._setStartPage:
+            self.goToPage(self._setStartPage)
 
     def clearToolbar(self):
         """
@@ -248,6 +253,11 @@ class Application(QtGui.QMainWindow):
         :param page:
         :return:
         """
+        if not self.isVisible():
+            self._setStartPage = page
+            return
+
+
         # allow for direct string calls to the url
         if isinstance(page, (str, unicode)):
             urls = [page]
@@ -271,10 +281,10 @@ class Application(QtGui.QMainWindow):
         self._currentPage = []
 
         # loop over all urls
+
         for url in urls:
             # hide all the existing widgets and show the one for the url provided.
             if url in self._widgetMap and self._widgetMap[url] is not None:
-
                 # show the widget for the url provided.
                 self._widgetMap[url].show()
                 self._currentPage.append(self._widgetMap[url])
@@ -285,6 +295,7 @@ class Application(QtGui.QMainWindow):
                         if isinstance(widget, QtGui.QWidget):
                             if function not in self._widgetTools:
                                 if instance.isHFXWidget(widget):
+
                                     action = self._widgetBar.addWidget(widget.thisWidget())
                                 else:
                                     action = self._widgetBar.addWidget(widget)
@@ -337,8 +348,9 @@ class Application(QtGui.QMainWindow):
         if widget is not None:
             self._widgetMap[path] = instance.validateWidgetLayout(widget)
             self._container.addWidget(self._widgetMap[path])
+            self._widgetMap[path].setVisible(False)
 
-        # go to the page
+        # go to this widget by default.
         self.goToPage(path)
 
     def getWidgetAt(self, url):
@@ -357,4 +369,4 @@ class Application(QtGui.QMainWindow):
         Custom show that executes the application environment if it doesnt exist.
         :return:
         """
-        instance.waitTillClose(self)
+        instance.waitTillClose(self, self._startPage)

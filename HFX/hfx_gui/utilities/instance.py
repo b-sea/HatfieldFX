@@ -54,10 +54,12 @@ def launchPrep(obj, application):
         QtGui.qApp.setApplicationName(application)
 
 
-def waitTillClose(application):
+def waitTillClose(application, onShowCall=None):
     global IN_APP
 
     QtGui.QWidget.show(application)
+    if onShowCall:
+        onShowCall()
     if not IN_APP:
         IN_APP = True
         sys.exit(QtGui.qApp.exec_())

@@ -5,6 +5,7 @@ Convenience functions for system directory navigation.
 # python imports
 import os
 import sys
+import logging
 
 # package imports
 import data
@@ -37,6 +38,23 @@ class Jumper(object):
         # set instance variables
         self._startingPoint = path
         self._currentPath = path
+
+    def connectDB(self, name):
+        """
+        Connect to a db in the current directory. If it doesn't exist there, it will search the registered dbs.
+        :param name:
+        :return:
+        """
+        if not name.endswith('.db'):
+            name += '.db'
+
+        if not os.path.exists(self.cwd() + '/' + name):
+            try:
+                return data.getDB(name)
+            except KeyError:
+                logging.warning('Can\'t find the database you are looking for. You may need to make it.')
+        else:
+            self.mkdb(name)
 
     def mkdb(self, name, db=StaticDB):
         """

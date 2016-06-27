@@ -16,7 +16,9 @@ class List(QtGui.QListWidget):
     def __init__(self,
                  label=None,
                  canEdit=False,
-                 multiSelection=False):
+                 multiSelection=False,
+                 cascading=True,
+                 numbered=False):
         """
         """
         # prep the widget incase you are just calling it directly.
@@ -30,6 +32,8 @@ class List(QtGui.QListWidget):
         self._dataMap = {}
         self._pathMap = []
         self._createdPaths = {}
+        self._cascading = cascading
+        self._numbered = numbered
 
         # selection
         if multiSelection:
@@ -70,7 +74,10 @@ class List(QtGui.QListWidget):
     def value(self):
         value = []
         for item in self.selectedItems():
-            value.append(str(item.text()).strip())
+            digitDetect = item.text().split('\t')[0]
+            digitDetect.isDigit()
+            t = item.text().replace(digitDetect, '')
+            value.append(str(t).strip())
         return value
 
     def selectItem(self, url):
@@ -103,15 +110,19 @@ class List(QtGui.QListWidget):
         # init function
         self.clear()
         self._createdPaths = {}
+        num = 1
 
         # loop over all paths
         for path in self._pathMap:
 
             # check if this is a url path
-            if '/' not in path:
+            if '/' not in path or not self._cascading:
 
                 # register new path
-                self._createdPaths[path] = QtGui.QListWidgetItem(path)
+                if self._numbered:
+                    self._createdPaths[path] = QtGui.QListWidgetItem(str(num) + '\t' + path)
+                else:
+                    self._createdPaths[path] = QtGui.QListWidgetItem(path)
 
                 # create the item
                 self.addItem(self._createdPaths[path])
@@ -146,7 +157,10 @@ class List(QtGui.QListWidget):
 
                         # set the item flags
                         if part != base:
+                            self._createdPaths[currentPath] = QtGui.QListWidgetItem('\t' + indent + part)
                             self._createdPaths[currentPath].setFlags(QtCore.Qt.NoItemFlags)
+                        else:
+                            self._createdPaths[currentPath] = QtGui.QListWidgetItem(str(num) + '\t' + indent + part)
 
                         # add the item
                         self.addItem(self._createdPaths[currentPath])
@@ -161,6 +175,8 @@ class List(QtGui.QListWidget):
 
                     # inc indent
                     indent += '    '
+
+            num += 1
 
     def getData(self, url):
         """

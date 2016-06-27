@@ -5,6 +5,7 @@ Data interacts with the existing HFX database.
 import tinydb
 
 # python imports
+import logging
 from tempfile import NamedTemporaryFile
 
 
@@ -39,8 +40,18 @@ class _db(tinydb.TinyDB):
         DATABASES[name] = self
 
     def __del__(self):
-        global DATABASES
-        del DATABASES[self.name()]
+        try:
+            global DATABASES
+            del DATABASES[self.name()]
+        except:
+            pass
+
+    def query(self):
+        """
+        Create a query.
+        :return:
+        """
+        return tinydb.Query()
 
     def name(self):
         """
@@ -93,6 +104,9 @@ def getDB(name):
     :param name:
     :return:
     """
+    # correct name
+    if not name.endswith('.db'):
+        name += '.db'
     return DATABASES[name]
 
 
