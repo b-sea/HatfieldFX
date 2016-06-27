@@ -1,5 +1,7 @@
 """
 Data interacts with the existing HFX database.
+
+Back end is tinydb
 """
 # pure python db.
 import tinydb
