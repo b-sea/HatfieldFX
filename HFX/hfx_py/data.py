@@ -7,6 +7,7 @@ Back end is tinydb
 import tinydb
 
 # python imports
+from os.path import basename
 from tempfile import NamedTemporaryFile
 
 
@@ -123,13 +124,16 @@ class TransientDB(_db):
     """
     This creates a database that is removed after use.
     """
-    def __init__(self, name):
+    def __init__(self, name=None):
         """
         Create a transient db that is destroyed after use.
         :return:
         """
         # create the temp db
         self._f = NamedTemporaryFile(suffix='.db')
+
+        if not name:
+            name = basename(self._f.name).split('.')[0]
 
         # super
         super(TransientDB, self).__init__(name, self._f.name)

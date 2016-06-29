@@ -71,6 +71,9 @@ class ConvertToHFX(object):
         self._HeaderAndFooter = Vertical()
         self._Header = Horizontal()
         self._Footer = Horizontal()
+        self._hfx.isHFX = self.isHFX
+        self._hfx.functions = self.functions
+        applyHFXStyle(self._hfx)
 
         if layout:
             self._layout = layout()
@@ -79,6 +82,7 @@ class ConvertToHFX(object):
 
         # Build layout
         self._HeaderAndFooter.addLayout(self._Header)
+        self._HeaderAndFooter.addWidget(self._funcBar)
         self._HeaderAndFooter.addLayout(self._layout)
         self._HeaderAndFooter.addLayout(self._Footer)
 
@@ -99,6 +103,24 @@ class ConvertToHFX(object):
             self._layout.addWidget(self)
 
         applyHFXStyle(self)
+
+    def isHFX(self):
+        return True
+
+    def _inHFXApplication(self):
+        """
+        --private--
+        :return:
+        """
+        for action in self._funcBar.actions():
+            if isinstance(action, QtGui.QWidgetAction):
+                continue
+            self._funcBar.removeAction(action)
+
+        if not self._funcBar.actions():
+            self._funcBar.setVisible(False)
+        else:
+            self._funcBar.setVisible(True)
 
     def connectTo(self, function, *args):
         """
@@ -267,9 +289,13 @@ class ConvertToHFX(object):
         """
         if isinstance(function, QtGui.QWidget):
             self._functions[url] = function
+            self._funcBar.addWidget(self._functions[url])
         else:
             self._functions[url] = partial(function, *args, **kwargs)
+            action = self._funcBar.addAction(url)
+            action.triggered.connect(self._functions[url])
 
+        self._funcBar.setVisible(True)
         self._toolTips[url] = tip
 
     def getToolTip(self, url):
@@ -310,6 +336,9 @@ class ConvertToHFX(object):
         :return:
         """
         del self._functions[url]
+
+    def show(self):
+        self._hfx.show()
 
 
 def applyHFXStyle(widget):

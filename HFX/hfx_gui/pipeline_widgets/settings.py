@@ -22,15 +22,15 @@ class Applications(HFX.Tree):
         """
         :return:
         """
-        super(Applications, self).__init__('Application Environments', hideHeaders=True)
+        super(Applications, self).__init__('Application Environments', hideHeaders=True, multiSelection=True)
 
         # grab the settings.db
         self._settingsDB = HFX.getDB('settings')
         self._applications = self._settingsDB.table('Applications')
 
         # context functions
+        self.addFunction('+', self.addApplication)
         self.addContextFunction('New Application Environment', self.addApplication)
-        self.addContextFunction('Refresh', self.refresh)
 
         self.refresh()
 
@@ -54,7 +54,6 @@ class Applications(HFX.Tree):
                 item = self.addItem(itemMap[app.eid], parent=itemMap[int(parent)])
 
             item.appID = app.eid
-
 
     def addApplication(self):
         """
@@ -123,28 +122,21 @@ class Settings(HFX.Application):
         self._sysPath = HFX.List('sys.path Management', cascading=False, numbered=True)
         self._envVariables = HFX.Tree('Environment Variables', headers=['Variable', 'Value'])
 
+
         # add the widgets
         self.addWidget('/Application Info/Paths', self._sysPath)
         self.addWidget('/Application Info/Environment', self._envVariables)
         self.addSidePanel(self.DockRight, self._apps)
 
-        # load the default python env
-        self.loadPythonEnv()
-
         # make connections
         self._apps.connectTo(self._apps.itemClicked, self.loadAppData)
 
-    def loadPythonEnv(self):
+    def addSysPath(self):
         """
-        This just loads pythons sys path information and environment variables.
+        Register a system path.
         :return:
         """
-        # loop through sys paths
-        self._sysPath.addPaths(sys.path)
 
-        # loop through env
-        for var in sorted(os.environ.keys()):
-            self._envVariables.addItem([var, os.environ[var]])
 
     def loadAppData(self, item):
         """

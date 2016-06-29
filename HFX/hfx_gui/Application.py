@@ -2,7 +2,7 @@
 from PySide import QtGui, QtCore
 
 # utilities
-from utilities import instance, applyHFXStyle
+from utilities import instance, applyHFXStyle, ConvertToHFX
 
 # python imports
 from os.path import basename
@@ -158,10 +158,7 @@ class Application(QtGui.QMainWindow):
         # instance variables
         self._appFuncMap = {}
         self._widgetMap = {}
-        self._widgetTools = {}
         self._currentPage = None
-        self._widgetBar = QtGui.QToolBar()
-        self._widgetBar.setOrientation(QtCore.Qt.Vertical)
         self._setStartPage = None
 
         # default widgets
@@ -174,7 +171,6 @@ class Application(QtGui.QMainWindow):
         # layout
         self._container = QtGui.QHBoxLayout()
         self._container.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self._container.addWidget(self._widgetBar)
         container.setLayout(self._container)
 
         # add widgets
@@ -191,14 +187,6 @@ class Application(QtGui.QMainWindow):
     def _startPage(self):
         if self._setStartPage:
             self.goToPage(self._setStartPage)
-
-    def clearToolbar(self):
-        """
-        Clear the tool bar
-        :return:
-        """
-        for tool in self._widgetTools.values():
-            tool.setVisible(False)
 
     def addApplicationFunction(self, url, function, tip=None):
         """
@@ -271,7 +259,6 @@ class Application(QtGui.QMainWindow):
 
         self._functionBar.clearPaths()
         self._functionBar.refresh()
-        self.clearToolbar()
 
         # hide all widgets
         for widget in self._widgetMap.values():
@@ -291,19 +278,9 @@ class Application(QtGui.QMainWindow):
 
                 if instance.isHFXWidget(self._widgetMap[url]):
                     for function in sorted(self._widgetMap[url].functions()):
-                        widget = self._widgetMap[url].functions()[function]
-                        if isinstance(widget, QtGui.QWidget):
-                            if function not in self._widgetTools:
-                                if instance.isHFXWidget(widget):
-
-                                    action = self._widgetBar.addWidget(widget.thisWidget())
-                                else:
-                                    action = self._widgetBar.addWidget(widget)
-                                self._widgetTools[widget] = action
-                            self._widgetTools[widget].setVisible(True)
-                            self._widgetTools[widget].setEnabled(True)
-                        else:
-                            self._functionBar.addPath(function)
+                        if isinstance(self._widgetMap[url].functions()[function], QtGui.QWidget):
+                            continue
+                        self._functionBar.addPath(function)
 
                 self._navBar._createdPaths[url].setSelected(True)
 
@@ -347,6 +324,8 @@ class Application(QtGui.QMainWindow):
         self._widgetMap[path] = None
         if widget is not None:
             self._widgetMap[path] = instance.validateWidgetLayout(widget)
+            if isinstance(widget, ConvertToHFX):
+                widget._inHFXApplication()
             self._container.addWidget(self._widgetMap[path])
             self._widgetMap[path].setVisible(False)
 

@@ -75,7 +75,8 @@ def validateWidgetLayout(widget):
 
 
 def isHFXWidget(widget):
-    if '_hfx' in dir(widget) or isinstance(widget, ConvertToHFX):
-        return True
-    return False
+    try:
+        return widget.isHFX()
+    except:
+        return False
 
