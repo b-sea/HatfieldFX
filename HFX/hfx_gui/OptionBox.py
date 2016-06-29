@@ -1,10 +1,10 @@
 # PySide import
 from PySide import QtGui
 
-from utilities import toHFX, Horizontal, launchPrep
+from utilities import ConvertToHFX, Horizontal
 
 
-class OptionBox(QtGui.QComboBox):
+class OptionBox(ConvertToHFX, QtGui.QComboBox):
     """
     OptionBox widget
     """
@@ -13,19 +13,7 @@ class OptionBox(QtGui.QComboBox):
         """
         :param label:
         """
-
-        launchPrep(self, '')
-
-        super(OptionBox, self).__init__()
-
-        # convert this widget to an hfx widget
-        toHFX(self, Horizontal)
-
-        # add the label if there is one passed
-        if label is not None:
-            labelWidget = QtGui.QLabel(self)
-            labelWidget.setText(label)
-            self.addWidget(labelWidget, 0)
+        super(OptionBox, self).__init__(label=label, layout=Horizontal)
 
     def value(self):
         """

@@ -6,7 +6,7 @@ import sys
 from PySide import QtGui
 
 # conversion imports
-from PySide_to_HFX import _hfx
+from PySide_to_HFX import ConvertToHFX
 
 
 # Application var
@@ -23,12 +23,15 @@ __all__ = [
 ]
 
 
+styleSheet = open(os.path.dirname(__file__) + '/stylesheet.qss').read()
+
+
 def hfxStylesheet():
     """
     HFX stylesheet
     :return:
     """
-    return open(os.path.dirname(__file__) + '/stylesheet.qss').read()
+    return styleSheet
 
 
 def launchPrep(obj, application):
@@ -72,7 +75,7 @@ def validateWidgetLayout(widget):
 
 
 def isHFXWidget(widget):
-    if '_hfx' in dir(widget) or isinstance(widget, _hfx):
+    if '_hfx' in dir(widget) or isinstance(widget, ConvertToHFX):
         return True
     return False
 

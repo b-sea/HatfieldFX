@@ -2,10 +2,10 @@
 from PySide import QtGui, QtCore
 
 # utility import
-from utilities import toHFX, launchPrep
+from utilities import ConvertToHFX
 
 
-class Tree(QtGui.QTreeWidget):
+class Tree(ConvertToHFX, QtGui.QTreeWidget):
     """
     Tree widget
     """
@@ -34,22 +34,10 @@ class Tree(QtGui.QTreeWidget):
         :param canEdit:
         :param multiSelection:
         """
-
-        launchPrep(self, '')
-
-        super(Tree, self).__init__()
+        super(Tree, self).__init__(label=label)
 
         # instance vars
         self._items = []
-
-        # convert this widget to an hfx widget
-        toHFX(self)
-
-        # add the label if there is one passed
-        if label is not None:
-            labelWidget = QtGui.QLabel(self)
-            labelWidget.setText(label)
-            self.addHeader(labelWidget)
 
         # hide headers
         self.setHeaderHidden(hideHeaders)

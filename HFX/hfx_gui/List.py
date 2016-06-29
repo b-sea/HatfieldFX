@@ -2,13 +2,13 @@
 from PySide import QtGui, QtCore
 
 # utility imports
-from utilities import toHFX, launchPrep
+from utilities import ConvertToHFX
 
 # Python imports
 from os.path import basename
 
 
-class List(QtGui.QListWidget):
+class List(ConvertToHFX, QtGui.QListWidget):
     """
     List widget
     """
@@ -21,12 +21,7 @@ class List(QtGui.QListWidget):
                  numbered=False):
         """
         """
-        # prep the widget incase you are just calling it directly.
-        launchPrep(self, '')
-
-        super(List, self).__init__()
-
-        toHFX(self)
+        super(List, self).__init__(label=label)
 
         # create path map
         self._dataMap = {}
@@ -41,12 +36,6 @@ class List(QtGui.QListWidget):
 
         if canEdit:
             self.setDragDropMode(self.InternalMove)
-
-        # add the label if there is one passed
-        if label is not None:
-            labelWidget = QtGui.QLabel(self)
-            labelWidget.setText(label)
-            self.addWidget(labelWidget, 0)
 
     def items(self):
         """

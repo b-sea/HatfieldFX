@@ -1,10 +1,10 @@
 # PySide import
 from PySide import QtGui
 
-from utilities import toHFX, Horizontal, launchPrep
+from utilities import ConvertToHFX, Horizontal
 
 
-class LineEdit(QtGui.QLineEdit):
+class LineEdit(ConvertToHFX, QtGui.QLineEdit):
     """
     LineEdit widget
     """
@@ -13,19 +13,11 @@ class LineEdit(QtGui.QLineEdit):
         """
         :param label:
         """
-
-        launchPrep(self, '')
-
-        super(LineEdit, self).__init__()
-
-        # convert this widget to an hfx widget
-        toHFX(self, Horizontal)
+        super(LineEdit, self).__init__(label=label, layout=Horizontal)
 
         # add the label if there is one passed
         if label is not None:
-            labelWidget = QtGui.QLabel(self)
-            labelWidget.setText(label)
-            self.addWidget(labelWidget, 0)
+            self.setName(label)
 
     def setValue(self, value):
         """
