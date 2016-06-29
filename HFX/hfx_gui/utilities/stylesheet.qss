@@ -10,6 +10,7 @@ QWidget {
 QLineEdit, QTextEdit {
     border: 1px;
     padding: 0 8px;
+    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.05 #40AD00, stop:1 #171717);
 }
 
 QHeaderView {
@@ -31,6 +32,12 @@ QAbstractItemView {
     padding-right: 10px;
 }
 
+QAbstractItemView::item {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                                stop:0 rgb(25, 25, 25), stop: 0.9 rgb(30, 30, 30), stop:1 rgb(25, 25, 25));
+    border-radius: 8px;
+}
+
 QAbstractItemView::item:focus {
     selection-background-color: #171717;
     border-radius: 0px;
@@ -41,21 +48,18 @@ QAbstractItemView::item:focus {
 QAbstractItemView::item:selected {
     color: #40AD00;
     border-radius: 8px;
-    border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
-    border-right: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    border-left: 2px solid #171717;
 }
 
 QAbstractItemView::item:hover {
     border-radius: 8px;
-    border-left: 1px dotted #C2C2C2;
+    padding-left: 1px;
 }
 
 QAbstractItemView::item:disabled {
-    color: #C2C2C2;
-    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.1 #40AD00, stop:1 #171717);
-    background: #171717;
+    color: rgb(200, 200, 200);
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                                stop:0 rgb(25, 25, 25), stop: 0.1 rgb(40, 40, 40), stop:1 rgb(25, 25, 25));
 }
 
 QDockWidget {
@@ -166,16 +170,18 @@ Button {
     padding: 5px 15px 5px 15px;
 }
 
-Button:hover {
+QPushButton:hover {
     border: 1 solid rgb(0, 50, 0);
+    border-right: 2 solid #40AD00;
+    padding: 5px 15px 5px 11px;
 }
 
-Button:pressed {
+QPushButton:pressed {
     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.9 rgb(0, 50, 0), stop:1 #171717);
     border: 1 solid #40AD00;
 }
 
 Dialog {
     border-radius: 0px;
-    border: 1 solid #40AD00;
+    border: 2px solid rgb(0, 50, 0);
 }

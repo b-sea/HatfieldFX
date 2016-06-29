@@ -1,5 +1,5 @@
 from Application import Application
-from LineEdit import LineEdit
+from LineEdit import LineEdit, FileLineEdit
 from List import List
 from MultiLineEdit import MultiLineEdit
 from OptionBox import OptionBox

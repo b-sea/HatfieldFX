@@ -179,7 +179,7 @@ class Tree(ConvertToHFX, QtGui.QTreeWidget):
         """
         :return:
         """
-        self.addItem(parent=self.RogueItem, *args, **kwargs)
+        return self.addItem(parent=self.RogueItem, *args, **kwargs)
 
     def addItem(self, labels, parent=None, bgColor=None, fgColor=None, widgets=None, icons=None):
         """
@@ -189,23 +189,35 @@ class Tree(ConvertToHFX, QtGui.QTreeWidget):
         :param bgColor: list of items background colors
         :param fgColor: list of items foreground colors
         :param widgets: list of widgets to add to this item
-        :param icon: list of icons to add to this item
+        :param icons: list of icons to add to this item
         :return:
         """
-        # determine parent
-        if parent is self.RogueItem and not isinstance(labels, QtGui.QTreeWidgetItem):
-            parent = None
-        elif parent is None:
+        if parent is None:
             parent = self
         else:
             pass
 
         if isinstance(labels, QtGui.QTreeWidgetItem):
-            parent.addChild(labels)
-            return
+            if parent is None:
+                parent = self
+            if parent is self:
+                parent.addTopLevelItem(labels)
+            else:
+                if isinstance(parent, QtGui.QTreeWidgetItem):
+                    parent.addChild(labels)
+                else:
+                    raise Exception('Invalid parent passed. ' + str(type(parent)))
+            return labels
 
         # create item
-        item = QtGui.QTreeWidgetItem(parent)
+        elif parent is None:
+            item = QtGui.QTreeWidgetItem(self)
+        elif parent is self.RogueItem:
+            item = QtGui.QTreeWidgetItem()
+        elif isinstance(parent, (Tree, QtGui.QTreeWidgetItem)):
+            item = QtGui.QTreeWidgetItem(parent)
+        else:
+            raise Exception('Invalid parent passed. ' + str(type(parent)))
 
         self.setIconSize(QtCore.QSize(20, 20))
 

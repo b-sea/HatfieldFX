@@ -135,7 +135,7 @@ class ConvertToHFX(object):
         self._Footer.addWidget(widget)
         self._widgets.append(widget)
 
-    def hfxMenuEvent(self, event):
+    def contextMenuEvent(self, event):
         """
         Custom right click
         :param event:
