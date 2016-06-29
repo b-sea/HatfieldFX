@@ -160,3 +160,22 @@ QComboBox QAbstractItemView {
     text-align: center;
 }
 
+Button {
+    border-radius: 8px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.1 rgb(0, 50, 0), stop:1 #171717);
+    padding: 5px 15px 5px 15px;
+}
+
+Button:hover {
+    border: 1 solid rgb(0, 50, 0);
+}
+
+Button:pressed {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.9 rgb(0, 50, 0), stop:1 #171717);
+    border: 1 solid #40AD00;
+}
+
+Dialog {
+    border-radius: 0px;
+    border: 1 solid #40AD00;
+}

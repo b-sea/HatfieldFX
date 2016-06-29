@@ -1,55 +1,68 @@
 # PySide import
 from PySide import QtGui, QtCore
 
-from utilities import toHFX, Horizontal, launchPrep
+from utilities import ConvertToHFX
+
+from Button import Button
+from Label import HorizontalDivider
 
 
-class Dialog(QtGui.QDialog):
+class Dialog(ConvertToHFX, QtGui.QDialog):
     """
     Dialog pop up widget.
     """
 
-    Ask = 0
-    Notification = 1
-
-    def __init__(self, message=None, dialogType=None):
+    def __init__(self, header=None, message=None):
         """
         :param message:
-        :param dialogType:
         """
-
-        launchPrep(self, '')
-
         # build class
-        super(Dialog, self).__init__()
+        super(Dialog, self).__init__(label=header, isDialog=True)
 
-        # convert Class to HFX
-        toHFX(self, Horizontal)
-
-        # instance variables
-        self._dialogType = dialogType
+        self._buttons = []
 
         # set window flags.
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-        # declare message
-        if message is None:
-            self._name = ''
-        else:
-            self._name = message
-
+    def addButton(self, button, function):
+        """
+        Add to this dialog.
+        :param button:
+        :param function:
+        :return:
+        """
+        self._buttons.append(Button(button, function))
 
     def show(self, *args, **kwargs):
-        wrapper = QtGui.QWidget()
-        horLayout = QtGui.QHBoxLayout()
-        horLayout.setAlignment(QtCore.Qt.AlignTop | QtCore.Qt.AlignRight)
-        wrapper.setLayout(horLayout)
-        self.addWidget(wrapper)
+        div = HorizontalDivider()
+        self.addWidget(div, 0)
 
-        if self._dialogType is None:
-            pass
+        if not self._buttons:
+            self._buttons.append(Button('Ok', self.accept))
+            self._buttons.append(Button('Cancel', self.reject))
 
-        if self._dialogType == self.Ask:
-            pass
-
+        for button in self._buttons:
+            self.addFooter(button)
         return self.exec_()
+
+
+class Notification(Dialog):
+    """
+    Meant to be a single pop up dialog for notifying the user.
+    """
+    def __init__(self, message, header=None):
+        super(Notification, self).__init__(header=header)
+        self.addWidget(QtGui.QLabel(message))
+        self.addButton('Ok', self.accept)
+        self.show()
+
+
+class Decision(Dialog):
+    """
+    Meant to be a point for the user to answer a question.
+    """
+    def __init__(self, message, header=None):
+        super(Decision, self).__init__(header=header)
+        self.addWidget(QtGui.QLabel(message))
+        self.addButton('Yes', self.accept)
+        self.addButton('No', self.accept)

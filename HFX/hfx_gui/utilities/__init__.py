@@ -1,2 +1,2 @@
 from instance import *
-from PySide_to_HFX import toHFX, applyHFXStyle, Vertical, Horizontal, guiKitVersion
+from PySide_to_HFX import ConvertToHFX, applyHFXStyle, Vertical, Horizontal, guiKitVersion

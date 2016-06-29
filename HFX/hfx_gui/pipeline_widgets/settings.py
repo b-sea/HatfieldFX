@@ -28,8 +28,6 @@ class Applications(HFX.Tree):
         # grab the settings.db
         self._settingsDB = HFX.getDB('settings')
         self._applicaitons = self._settingsDB.table('Applications')
-
-
         self._applicaitons.all()
 
         # context functions

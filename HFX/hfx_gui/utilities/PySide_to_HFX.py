@@ -11,8 +11,7 @@ import instance
 
 
 __all__ = [
-    '_hfx',
-    'toHFX',
+    'ConvertToHFX',
     'applyHFXStyle',
     'Vertical',
     'Horizontal',
@@ -52,14 +51,12 @@ Vertical = QtGui.QVBoxLayout
 Horizontal = QtGui.QHBoxLayout
 
 
-class _hfx(QtGui.QWidget):
+class ConvertToHFX(object):
     """
-    --container widget--
-
-    This is the underlying widget that will handle all layout manipulations
+    HFX object that handles most layout manipulations and tedious override functions from PySide.
     """
-    def __init__(self, mainWidget, layout):
-        super(_hfx, self).__init__()
+    def __init__(self, label=None, layout=None, isDialog=None):
+        super(ConvertToHFX, self).__init__()
 
         # HFX required variables
         self._name = ''
@@ -69,45 +66,54 @@ class _hfx(QtGui.QWidget):
         self._functions = {}
         self._contextFunctions = {}
         self._contextMap = []
-        self._mainWidget = mainWidget
         self._funcBar = QtGui.QToolBar()
+        self._hfx = QtGui.QWidget()
+        self._HeaderAndFooter = Vertical()
+        self._Header = Horizontal()
+        self._Footer = Horizontal()
 
-        # assign hfx layout functions
-        self._mainWidget._hfx = self
-        self._mainWidget.name = self.name
-        self._mainWidget.setName = self.setName
-        self._mainWidget.widgets = self.widgets
-        self._mainWidget.addWidget = self.addWidget
-        self._mainWidget.removeWidget = self.removeWidget
-        self._mainWidget.thisWidget = self.thisWidget
-        self._mainWidget.functions = self.functions
-        self._mainWidget.addFunction = self.addFunction
-        self._mainWidget.removeFunction = self.removeFunction
-        self._mainWidget.addContextFunction = self.addContextFunction
-        self._mainWidget.addContextSplit = self.addContextSplit
-        self._mainWidget.contextMenuEvent = self.hfxMenuEvent
-        self._mainWidget.getToolTip = self.getToolTip
-        self._mainWidget.show = self.show
-        self._mainWidget.addHeader = self.addHeader
-        self._mainWidget.addFooter = self.addFooter
+        if layout:
+            self._layout = layout()
+        else:
+            self._layout = Vertical()
 
-        # define the layout type
-        self._HeaderAndFooter = Vertical(self)
-        self._layout = layout()
-
+        # Build layout
+        self._HeaderAndFooter.addLayout(self._Header)
         self._HeaderAndFooter.addLayout(self._layout)
+        self._HeaderAndFooter.addLayout(self._Footer)
 
+        # align
+        self._Header.setAlignment(QtCore.Qt.AlignLeft)
+        self._Footer.setAlignment(QtCore.Qt.AlignLeft)
         self._HeaderAndFooter.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
-        self.setLayout(self._HeaderAndFooter)
+        if label:
+            self.setName(label)
 
         # add the main widget to the layout
-        self._layout.addWidget(self._mainWidget)
+        if isDialog:
+            self.setLayout(self._HeaderAndFooter)
+        else:
+            self._hfx.setLayout(self._HeaderAndFooter)
+            self._layout.addWidget(self)
 
-        # set up styling
         applyHFXStyle(self)
-        applyHFXStyle(self._mainWidget)
+
+    def connectTo(self, function, *args):
+        """
+        Pass a function with a list of signals you want to tie it to or pass a signal you want to tie a list of
+            functions to.
+        :param function:
+        :param args:
+        :return:
+        """
+        if isinstance(function, QtCore.Signal):
+            for func in args:
+                function.connect(func)
+        else:
+            for signal in args:
+                signal.connect(function)
 
     def addHeader(self, widget):
         """
@@ -116,8 +122,7 @@ class _hfx(QtGui.QWidget):
         :return:
         """
         widget = instance.validateWidgetLayout(widget)
-        self._HeaderAndFooter.insertWidget(0, widget)
-
+        self._Header.addWidget(widget)
         self._widgets.append(widget)
 
     def addFooter(self, widget):
@@ -127,34 +132,8 @@ class _hfx(QtGui.QWidget):
         :return:
         """
         widget = instance.validateWidgetLayout(widget)
-        self._HeaderAndFooter.addWidget(widget)
-
+        self._Footer.addWidget(widget)
         self._widgets.append(widget)
-
-    def show(self):
-        if QtGui.qApp.applicationName() == 'python' or QtGui.qApp.applicationName() == '':
-            if self._funcBar is None:
-                self._funcBar = QtGui.QToolBar()
-                self._funcBar.setOrientation(QtCore.Qt.Vertical)
-                for function in sorted(self.functions()):
-                    func = self.functions()[function]
-                    if isinstance(func, QtGui.QWidget):
-                        self._funcBar.addWidget(func)
-                    else:
-                        action = self._funcBar.addAction(basename(function))
-                        action.triggered.connect(func)
-
-                for widget in self.widgets():
-                    for function in sorted(widget.functions()):
-                        func = widget.functions()[function]
-                        if isinstance(func, QtGui.QWidget):
-                            self._funcBar.addWidget(func)
-                        else:
-                            action = self._funcBar.addAction(basename(function))
-                            action.triggered.connect(func)
-
-                self._layout.insertWidget(0, self._funcBar)
-        instance.waitTillClose(self)
 
     def hfxMenuEvent(self, event):
         """
@@ -207,7 +186,7 @@ class _hfx(QtGui.QWidget):
             contextMenu.exec_(self.mapToGlobal(event.pos()))
 
         else:
-            type(self._mainWidget).contextMenuEvent(self._mainWidget, event)
+            type(self).contextMenuEvent(self, event)
 
     def name(self):
         """
@@ -218,10 +197,11 @@ class _hfx(QtGui.QWidget):
 
     def setName(self, name):
         """
-        Set the name of this widget
+        Set the name of this widget. This will also add a header label to the widget with the name as well.
         :return:
         """
         self._name = name
+        self.addHeader(QtGui.QLabel(self.name()))
 
     def widgets(self):
         """
@@ -267,7 +247,7 @@ class _hfx(QtGui.QWidget):
         Get this widgets layout handler so it can be added to other widgets.
         :return:
         """
-        return self
+        return self._hfx
 
     def functions(self):
         """
@@ -336,13 +316,3 @@ def applyHFXStyle(widget):
     widget.setStyle(QtGui.QStyleFactory().create('Plastique'))  #windowsvista
     widget.setStyleSheet(instance.hfxStylesheet())
 
-
-def toHFX(widget, layout=Vertical):
-    """
-    Converts an existing PySide widget to an HFX widget.
-    :param layout: layout type example: HFX.Vertical
-    :param widget: PySide widget
-    :return: PySide widget
-    """
-    _hfx(mainWidget=widget, layout=layout)
-    return widget

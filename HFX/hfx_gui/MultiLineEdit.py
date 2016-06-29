@@ -1,7 +1,7 @@
 # PySide import
 from PySide import QtGui, QtCore
 
-from utilities import toHFX, launchPrep
+from utilities import ConvertToHFX
 
 
 __all__ = [
@@ -9,7 +9,7 @@ __all__ = [
 ]
 
 
-class MultiLineEdit(QtGui.QTextEdit):
+class MultiLineEdit(ConvertToHFX, QtGui.QTextEdit):
     """
     MultiLineEdit widget
     """
@@ -22,20 +22,7 @@ class MultiLineEdit(QtGui.QTextEdit):
         """
         :param label:
         """
-
-        launchPrep(self, '')
-
-        super(MultiLineEdit, self).__init__()
-
-        # convert this widget to an hfx widget
-        toHFX(self)
-
-        # add the label if there is one passed
-        if label is not None:
-            labelWidget = QtGui.QLabel(self)
-            labelWidget.setText(label)
-            self.addWidget(labelWidget, 0)
-
+        super(MultiLineEdit, self).__init__(label=label)
 
         char_format = QtGui.QTextCharFormat()
         char_format.setFont(self.font())
