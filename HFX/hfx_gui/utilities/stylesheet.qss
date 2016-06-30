@@ -10,7 +10,7 @@ QWidget {
 QLineEdit, QTextEdit {
     border: 1px;
     padding: 0 8px;
-    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.05 #40AD00, stop:1 #171717);
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.8 rgb(30, 30, 40), stop:1 #171717);
 }
 
 QHeaderView {
@@ -21,8 +21,8 @@ QHeaderView::section {
     padding-left: 4px;
     border: 0px;
     border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
-    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.05 #40AD00, stop:1 #171717);
+                                                stop:0 #171717, stop: 0.5 rgb(100, 100, 200), stop:1 #171717);
+    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.05 rgb(100, 100, 200), stop:1 #171717);
 }
 
 QAbstractItemView {
@@ -46,7 +46,7 @@ QAbstractItemView::item:focus {
 }
 
 QAbstractItemView::item:selected {
-    color: #40AD00;
+    color: rgb(100, 100, 200);
     border-radius: 8px;
     border-left: 2px solid #171717;
 }
@@ -82,11 +82,11 @@ QMainWindow::separator {
 }
 
 QMainWindow::separator:vertical:hover {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.5 rgb(100, 100, 200), stop:1 #171717);
 }
 
 QMainWindow::separator:horizontal:hover {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.5 rgb(100, 100, 200), stop:1 #171717);
 }
 
 QMenu {
@@ -97,46 +97,37 @@ QMenu::item {
     color: #7E9BA3;
     border-radius: 8px;
     border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                stop:0 #171717, stop: 0.8 #40AD00, stop:1 #171717);
+                                                stop:0 #171717, stop: 0.8 rgb(100, 100, 200), stop:1 #171717);
     selection-background-color: #171717;
-    selection-color: #40AD00;
+    selection-color: rgb(100, 100, 200);
     text-align: center;
     padding: 2px 5px 2px 20px;
 }
 
 QMenu::item:selected {
-    color: #40AD00;
+    color: rgb(100, 100, 200);
     border-radius: 8px;
-    border-left: 2px solid #40AD00;
+    border-left: 2px solid rgb(100, 100, 200);
 }
 
 QMenu::separator {
     height: 1px;
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.5 #40AD00, stop:1 #171717);
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #171717, stop: 0.5 rgb(100, 100, 200), stop:1 #171717);
     margin-left: 10px;
     margin-right: 5px;
 }
 
 QComboBox {
-    color: #7E9BA3;
-    padding: 5px 18px 1px 3px;
-    min-width: 6em;
-    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                                stop:0 #171717, stop: 0.1 #C2C2C2, stop:1 #171717);
-    padding-top: 3px;
-    padding-left: 15px;
-    text-align: center;
+    border-radius: 8px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.1 rgb(40, 40, 50), stop:1 #171717);
+    padding: 5px 15px 5px 15px;
 }
 
 QComboBox:hover {
-    color: #7E9BA3;
-    padding: 5px 18px 1px 3px;
-    min-width: 6em;
-    border-bottom: 1px solid qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                                stop:0 #171717, stop: 0.1 #40AD00, stop:1 #171717);
-    padding-top: 3px;
-    padding-left: 15px;
-    text-align: center;
+    border-radius: 8px;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.9 rgb(40, 40, 50), stop:1 #171717);
+    border-right: 2px solid rgb(100, 100, 200);
+    padding: 5px 15px 5px 15px;
 }
 
 QComboBox:on {
@@ -146,10 +137,10 @@ QComboBox:on {
 }
 
 QComboBox::drop-down {
-    color: #40AD00;
+    color: rgb(100, 100, 200);
     border-radius: 8px;
-    border-left: 0px dotted #40AD00;
-    border-right: 0px dotted #40AD00;
+    border-left: 0px dotted rgb(100, 100, 200);
+    border-right: 0px dotted rgb(100, 100, 200);
     text-align: center;
 }
 
@@ -157,31 +148,31 @@ QComboBox QAbstractItemView {
     color: #7E9BA3;
     border-radius: 8px;
     border-left: 2px solid qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                                stop:0 #171717, stop: 0.8 #40AD00, stop:1 #171717);
+                                                stop:0 #171717, stop: 0.8 rgb(100, 100, 200), stop:1 #171717);
     selection-background-color: #171717;
-    selection-color: #40AD00;
+    selection-color: rgb(100, 100, 200);
     padding: 2px 5px 2px 20px;
     text-align: center;
 }
 
 Button {
     border-radius: 8px;
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.1 rgb(0, 50, 0), stop:1 #171717);
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.1 rgb(40, 40, 50), stop:1 #171717);
     padding: 5px 15px 5px 15px;
 }
 
 QPushButton:hover {
-    border: 1 solid rgb(0, 50, 0);
-    border-right: 2 solid #40AD00;
+    border: 1 solid rgb(25, 25, 75);
+    border-right: 2 solid rgb(100, 100, 200);
     padding: 5px 15px 5px 11px;
 }
 
 QPushButton:pressed {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.9 rgb(0, 50, 0), stop:1 #171717);
-    border: 1 solid #40AD00;
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #171717, stop: 0.9 rgb(25, 25, 75), stop:1 #171717);
+    border: 1 solid rgb(100, 100, 200);
 }
 
 Dialog {
     border-radius: 0px;
-    border: 2px solid rgb(0, 50, 0);
+    border: 2px solid rgb(25, 25, 75);
 }

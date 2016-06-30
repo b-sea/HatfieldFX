@@ -9,3 +9,4 @@ from utilities import Horizontal, Vertical, guiKitVersion
 from Button import Button
 from Dialog import Dialog, Notification, Decision
 from Label import Label, HorizontalDivider, VerticalDivider
+from CheckBox import CheckBox

@@ -122,6 +122,8 @@ class Settings(HFX.Application):
         self._sysPath = HFX.List('sys.path Management', cascading=False, numbered=True)
         self._envVariables = HFX.Tree('Environment Variables', headers=['Variable', 'Value'])
 
+        # add functions
+        self._sysPath.addFunction('Add Path', self.addSysPath)
 
         # add the widgets
         self.addWidget('/Application Info/Paths', self._sysPath)
@@ -136,6 +138,18 @@ class Settings(HFX.Application):
         Register a system path.
         :return:
         """
+        pathField = HFX.FileLineEdit('Directory to add')
+        pathBox = HFX.CheckBox('Add to PATH as well?')
+        state = HFX.OptionBox('State')
+        state.addItems(['Active', 'Auto-Import', 'Disable'])
+
+        dialog = HFX.Dialog('Add python sys path')
+        dialog.addWidget(state)
+        dialog.addWidget(pathBox)
+        dialog.addWidget(pathField)
+
+        if not dialog.show():
+            return
 
 
     def loadAppData(self, item):

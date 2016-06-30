@@ -87,8 +87,8 @@ class ConvertToHFX(object):
         self._HeaderAndFooter.addLayout(self._Footer)
 
         # align
-        self._Header.setAlignment(QtCore.Qt.AlignLeft)
-        self._Footer.setAlignment(QtCore.Qt.AlignLeft)
+        self._Header.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self._Footer.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._HeaderAndFooter.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
@@ -208,7 +208,7 @@ class ConvertToHFX(object):
             contextMenu.exec_(self.mapToGlobal(event.pos()))
 
         else:
-            type(self).contextMenuEvent(self, event)
+            type(self._hfx).contextMenuEvent(self, event)
 
     def name(self):
         """
