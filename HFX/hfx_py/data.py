@@ -7,6 +7,7 @@ Back end is tinydb
 import tinydb
 
 # python imports
+from os.path import basename
 from tempfile import NamedTemporaryFile
 
 
@@ -47,7 +48,47 @@ class _db(tinydb.TinyDB):
         except:
             pass
 
-    def query(self):
+    def findAll(self, field, condition, value, table=None):
+        """
+        Find all data elements that match the value of the field that is evaluated with the condition. You can pass an
+        optional table to search in.
+        :param field:
+        :param condition:
+        :param value:
+        :param table: optional
+        :return:
+        """
+        result = []
+        SEARCHER = self.field()
+
+        value = str(value)
+        if not value.isdigit():
+            value = "'%s'" % value
+
+        if table:
+            exec "result = self.table('%s').search(SEARCHER.%s %s %s)" % (table, field, condition, value)
+        else:
+            exec "result = self.search(SEARCHER.%s %s %s)" % (field, condition, value)
+
+        return result
+
+    def findExactly(self, field, condition, value, table=None):
+        """
+        Find all data elements that match the value of the field that is evaluated with the condition. You can pass an
+        optional table to search in.
+        :param field:
+        :param condition:
+        :param value:
+        :param table: optional
+        :return:
+        """
+        try:
+            return self.findAll(field, condition, value, table)[0]
+        except IndexError:
+            return None
+
+    @staticmethod
+    def field():
         """
         Create a query.
         :return:
@@ -83,13 +124,16 @@ class TransientDB(_db):
     """
     This creates a database that is removed after use.
     """
-    def __init__(self, name):
+    def __init__(self, name=None):
         """
         Create a transient db that is destroyed after use.
         :return:
         """
         # create the temp db
         self._f = NamedTemporaryFile(suffix='.db')
+
+        if not name:
+            name = basename(self._f.name).split('.')[0]
 
         # super
         super(TransientDB, self).__init__(name, self._f.name)

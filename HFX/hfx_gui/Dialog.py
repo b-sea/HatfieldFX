@@ -65,4 +65,4 @@ class Decision(Dialog):
         super(Decision, self).__init__(header=header)
         self.addWidget(QtGui.QLabel(message))
         self.addButton('Yes', self.accept)
-        self.addButton('No', self.accept)
+        self.addButton('No', self.reject)

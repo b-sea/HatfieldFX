@@ -18,27 +18,80 @@ class Applications(HFX.Tree):
     """
     Application tree for selecting/creating new application environments.
     """
-
     def __init__(self):
         """
         :return:
         """
-        super(Applications, self).__init__('Application Environments', hideHeaders=True)
+        super(Applications, self).__init__('Application Environments', hideHeaders=True, multiSelection=True)
 
         # grab the settings.db
         self._settingsDB = HFX.getDB('settings')
-        self._applicaitons = self._settingsDB.table('Applications')
-        self._applicaitons.all()
+        self._applications = self._settingsDB.table('Applications')
 
         # context functions
+        self.addFunction('+', self.addApplication)
         self.addContextFunction('New Application Environment', self.addApplication)
+
+        self.refresh()
+
+    def refresh(self):
+        """
+        refresh the app list.
+        :return:
+        """
+        self.clear()
+        apps = self._settingsDB.findAll('type', '==', 'application', table='Applications')
+
+        itemMap = {}
+        for app in apps:
+            itemMap[app.eid] = self.createItem(app['name'])
+
+        for app in apps:
+            parent = app['parent']
+            if parent is None:
+                item = self.addItem(itemMap[app.eid])
+            else:
+                item = self.addItem(itemMap[app.eid], parent=itemMap[int(parent)])
+
+            item.appID = app.eid
 
     def addApplication(self):
         """
         Create a new application.
         :return:
         """
-        self._applicaitons.insert({'envs': [], 'paths': [], 'type': 'application', 'name': 'Unnamed', 'parent': None})
+        # set the default values
+        applicationPathDefault = ''
+        parent = None
+
+        selection = self.selectedItems()
+        if selection:
+            parentApp = selection[0].text(0)
+            search = self._settingsDB.findExactly('name', '==', parentApp, table='Applications')
+            if search:
+                applicationPathDefault = search['launch']
+                parent = str(search.eid)
+
+        applicationName = HFX.LineEdit('Application Name')
+        applicationPath = HFX.FileLineEdit('Application Path')
+        applicationPath.setValue(applicationPathDefault)
+
+        dialog = HFX.Dialog('Create Application')
+        dialog.addWidget(applicationName)
+        dialog.addWidget(applicationPath)
+        if not dialog.show():
+            return
+
+        self._applications.insert({
+            'envs': [],
+            'paths': [],
+            'type': 'application',
+            'name': applicationName.value(),
+            'parent': parent,
+            'launch': applicationPath.value()
+        })
+
+        self.refresh()
 
 
 class Settings(HFX.Application):
@@ -60,31 +113,78 @@ class Settings(HFX.Application):
 
         # connect and or create the database.
         self._settingsDB = nav.mkdb('settings')
+        self._applications = self._settingsDB.table('Applications')
+        self._paths = self._settingsDB.table('Paths')
+        self._vars = self._settingsDB.table('Vars')
 
         # build ui
         self._apps = Applications()
         self._sysPath = HFX.List('sys.path Management', cascading=False, numbered=True)
-        self._envVariables = HFX.Tree('Environment Variables', headers=['Variable', 'Value'])
+        self._envVariables = HFX.DataTree('Environment Variables')
+
+        # add functions
+        self._sysPath.addFunction('Add Path', self.addSysPath)
+        self._sysPath.addFunction('Remove Path', self.removeSysPath)
 
         # add the widgets
         self.addWidget('/Application Info/Paths', self._sysPath)
         self.addWidget('/Application Info/Environment', self._envVariables)
         self.addSidePanel(self.DockRight, self._apps)
 
-        # load the default python env
-        self.loadPythonEnv()
+        # make connections
+        self._apps.connectTo(self._apps.itemClicked, self.loadAppData)
 
-    def loadPythonEnv(self):
+    def _refresh(self):
         """
-        This just loads pythons sys path information and environment variables.
+        --private--
         :return:
         """
-        # loop through sys paths
-        self._sysPath.addPaths(sys.path)
 
-        # loop through env
-        for var in sorted(os.environ.keys()):
-            self._envVariables.addItem([var, os.environ[var]])
+    def removeSysPath(self):
+        """
+        Delete a system path from the database.
+        :return:
+        """
+        dialog = HFX.Decision('Are you sure you want to remove this path? This may effect some application environments.')
+
+        if not dialog.show():
+            print 'asdfs'
+            return
+
+    def addSysPath(self):
+        """
+        Register a system path.
+        :return:
+        """
+        pathField = HFX.FileLineEdit('Directory to add')
+        pathBox = HFX.CheckBox('Add to PATH as well?')
+        state = HFX.OptionBox('State')
+        state.addItems(['Active', 'Auto-Import', 'Disable'])
+
+        dialog = HFX.Dialog('Add python sys path')
+        dialog.addWidget(state)
+        dialog.addWidget(pathBox)
+        dialog.addWidget(pathField)
+
+        if not dialog.show():
+            return
+
+        self._paths.insert(
+            {
+                'path': pathField.value(),
+                'status': state.value(),
+                'addToPath': pathBox.value()
+            }
+        )
+
+    def loadAppData(self, item):
+        """
+        Load the selected Applications data.
+        :param item:
+        :return:
+        """
+        print self._applications.get(eid=item.appID)
 
 
 Settings().show()
+

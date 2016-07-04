@@ -54,7 +54,7 @@ class Jumper(object):
             except KeyError:
                 logging.warning('Can\'t find the database you are looking for. You may need to make it.')
         else:
-            self.mkdb(name)
+            return self.mkdb(name)
 
     def mkdb(self, name, db=StaticDB):
         """

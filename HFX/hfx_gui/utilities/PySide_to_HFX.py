@@ -48,7 +48,7 @@ def guiKitVersion():
 
 # layout presets
 Vertical = QtGui.QVBoxLayout
-Horizontal = QtGui.QHBoxLayout
+Horizontal = QtGui.QToolBar
 
 
 class ConvertToHFX(object):
@@ -69,8 +69,9 @@ class ConvertToHFX(object):
         self._funcBar = QtGui.QToolBar()
         self._hfx = QtGui.QWidget()
         self._HeaderAndFooter = Vertical()
-        self._Header = Horizontal()
-        self._Footer = Horizontal()
+        self._hfx.isHFX = self.isHFX
+        self._hfx.functions = self.functions
+        applyHFXStyle(self._hfx)
 
         if layout:
             self._layout = layout()
@@ -78,15 +79,15 @@ class ConvertToHFX(object):
             self._layout = Vertical()
 
         # Build layout
-        self._HeaderAndFooter.addLayout(self._Header)
-        self._HeaderAndFooter.addLayout(self._layout)
-        self._HeaderAndFooter.addLayout(self._Footer)
+        self._HeaderAndFooter.addWidget(self._funcBar)
+        if isinstance(self._layout, Horizontal):
+            self._HeaderAndFooter.addWidget(self._layout)
+        else:
+            self._HeaderAndFooter.addLayout(self._layout)
+            self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
         # align
-        self._Header.setAlignment(QtCore.Qt.AlignLeft)
-        self._Footer.setAlignment(QtCore.Qt.AlignLeft)
         self._HeaderAndFooter.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
         if label:
             self.setName(label)
@@ -99,6 +100,24 @@ class ConvertToHFX(object):
             self._layout.addWidget(self)
 
         applyHFXStyle(self)
+
+    def isHFX(self):
+        return True
+
+    def _inHFXApplication(self):
+        """
+        --private--
+        :return:
+        """
+        for action in self._funcBar.actions():
+            if isinstance(action, QtGui.QWidgetAction):
+                continue
+            self._funcBar.removeAction(action)
+
+        if not self._funcBar.actions():
+            self._funcBar.setVisible(False)
+        else:
+            self._funcBar.setVisible(True)
 
     def connectTo(self, function, *args):
         """
@@ -122,7 +141,7 @@ class ConvertToHFX(object):
         :return:
         """
         widget = instance.validateWidgetLayout(widget)
-        self._Header.addWidget(widget)
+        self._HeaderAndFooter.insertWidget(0, widget)
         self._widgets.append(widget)
 
     def addFooter(self, widget):
@@ -132,10 +151,10 @@ class ConvertToHFX(object):
         :return:
         """
         widget = instance.validateWidgetLayout(widget)
-        self._Footer.addWidget(widget)
+        self._HeaderAndFooter.insertWidget(self._HeaderAndFooter.count(), widget)
         self._widgets.append(widget)
 
-    def hfxMenuEvent(self, event):
+    def contextMenuEvent(self, event):
         """
         Custom right click
         :param event:
@@ -186,7 +205,7 @@ class ConvertToHFX(object):
             contextMenu.exec_(self.mapToGlobal(event.pos()))
 
         else:
-            type(self).contextMenuEvent(self, event)
+            type(self._hfx).contextMenuEvent(self, event)
 
     def name(self):
         """
@@ -267,9 +286,13 @@ class ConvertToHFX(object):
         """
         if isinstance(function, QtGui.QWidget):
             self._functions[url] = function
+            self._funcBar.addWidget(self._functions[url])
         else:
             self._functions[url] = partial(function, *args, **kwargs)
+            action = self._funcBar.addAction(url)
+            action.triggered.connect(self._functions[url])
 
+        self._funcBar.setVisible(True)
         self._toolTips[url] = tip
 
     def getToolTip(self, url):
@@ -311,8 +334,11 @@ class ConvertToHFX(object):
         """
         del self._functions[url]
 
+    def show(self):
+        self._hfx.show()
+
 
 def applyHFXStyle(widget):
-    widget.setStyle(QtGui.QStyleFactory().create('Plastique'))  #windowsvista
+    widget.setStyle(QtGui.QStyleFactory().create('Plastique'))
     widget.setStyleSheet(instance.hfxStylesheet())
 
