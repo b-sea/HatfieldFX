@@ -177,7 +177,6 @@ class Settings(HFX.Application):
             }
         )
 
-
     def loadAppData(self, item):
         """
         Load the selected Applications data.
