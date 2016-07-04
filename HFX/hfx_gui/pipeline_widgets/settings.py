@@ -120,10 +120,11 @@ class Settings(HFX.Application):
         # build ui
         self._apps = Applications()
         self._sysPath = HFX.List('sys.path Management', cascading=False, numbered=True)
-        self._envVariables = HFX.Tree('Environment Variables', headers=['Variable', 'Value'])
+        self._envVariables = HFX.DataTree('Environment Variables')
 
         # add functions
         self._sysPath.addFunction('Add Path', self.addSysPath)
+        self._sysPath.addFunction('Remove Path', self.removeSysPath)
 
         # add the widgets
         self.addWidget('/Application Info/Paths', self._sysPath)
@@ -132,6 +133,23 @@ class Settings(HFX.Application):
 
         # make connections
         self._apps.connectTo(self._apps.itemClicked, self.loadAppData)
+
+    def _refresh(self):
+        """
+        --private--
+        :return:
+        """
+
+    def removeSysPath(self):
+        """
+        Delete a system path from the database.
+        :return:
+        """
+        dialog = HFX.Decision('Are you sure you want to remove this path? This may effect some application environments.')
+
+        if not dialog.show():
+            print 'asdfs'
+            return
 
     def addSysPath(self):
         """
@@ -150,6 +168,14 @@ class Settings(HFX.Application):
 
         if not dialog.show():
             return
+
+        self._paths.insert(
+            {
+                'path': pathField.value(),
+                'status': state.value(),
+                'addToPath': pathBox.value()
+            }
+        )
 
 
     def loadAppData(self, item):
