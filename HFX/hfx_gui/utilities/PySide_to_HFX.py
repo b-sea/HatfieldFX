@@ -66,9 +66,7 @@ class ConvertToHFX(object):
         self._functions = {}
         self._contextFunctions = {}
         self._contextMap = []
-        self._funcBar = QtGui.QToolBar()
         self._hfx = QtGui.QWidget()
-        self._HeaderAndFooter = Vertical()
         self._hfx.isHFX = self.isHFX
         self._hfx.functions = self.functions
         applyHFXStyle(self._hfx)
@@ -100,24 +98,6 @@ class ConvertToHFX(object):
             self._layout.addWidget(self)
 
         applyHFXStyle(self)
-
-    def isHFX(self):
-        return True
-
-    def _inHFXApplication(self):
-        """
-        --private--
-        :return:
-        """
-        for action in self._funcBar.actions():
-            if isinstance(action, QtGui.QWidgetAction):
-                continue
-            self._funcBar.removeAction(action)
-
-        if not self._funcBar.actions():
-            self._funcBar.setVisible(False)
-        else:
-            self._funcBar.setVisible(True)
 
     def connectTo(self, function, *args):
         """
