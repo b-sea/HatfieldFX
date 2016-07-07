@@ -34,17 +34,22 @@ class Tree(ConvertToHFX, QtGui.QTreeWidget):
                  hideHeaders=False,
                  canEdit=False,
                  canEditFields=False,
-                 multiSelection=False):
+                 multiSelection=False,
+                 itemClass=None):
         """
         :param label:
         :param headers:
         :param hideHeaders:
         :param canEdit:
         :param multiSelection:
+        :param itemClass:
         """
         super(Tree, self).__init__(label=label)
 
         # instance vars
+        self._itemClass = QtGui.QTreeWidgetItem
+        if itemClass:
+            self._itemClass = itemClass
         self._items = []
 
         # hide headers
@@ -202,9 +207,10 @@ class Tree(ConvertToHFX, QtGui.QTreeWidget):
         """
         return self.addItem(*args, parent=self.RogueItem, **kwargs)
 
-    def addItem(self, labels, parent=None, bgColor=None, fgColor=None, widgets=None, icons=None):
+    def addItem(self, labels, parent=None, bgColor=None, fgColor=None, widgets=None, icons=None, Class=None):
         """
         Add an item to the Tree
+        :param Class: pass the class that you would like the tree widget to build the tree with
         :param labels: list of labels
         :param parent: parent item, None is default and will add the item as a top level
         :param bgColor: list of items background colors
@@ -218,13 +224,18 @@ class Tree(ConvertToHFX, QtGui.QTreeWidget):
         else:
             pass
 
-        if isinstance(labels, QtGui.QTreeWidgetItem):
+        if Class:
+            itemClass = Class
+        else:
+            itemClass = self._itemClass
+
+        if isinstance(labels, itemClass):
             if parent is None:
                 parent = self
             if parent is self:
                 parent.addTopLevelItem(labels)
             else:
-                if isinstance(parent, QtGui.QTreeWidgetItem):
+                if isinstance(parent, itemClass):
                     parent.addChild(labels)
                 else:
                     raise Exception('Invalid parent passed. ' + str(type(parent)))
@@ -232,11 +243,11 @@ class Tree(ConvertToHFX, QtGui.QTreeWidget):
 
         # create item
         elif parent is None:
-            item = QtGui.QTreeWidgetItem(self)
+            item = itemClass(self)
         elif parent is self.RogueItem:
-            item = QtGui.QTreeWidgetItem()
-        elif isinstance(parent, (Tree, QtGui.QTreeWidgetItem)):
-            item = QtGui.QTreeWidgetItem(parent)
+            item = itemClass()
+        elif isinstance(parent, (Tree, itemClass)):
+            item = itemClass(parent)
         else:
             raise Exception('Invalid parent passed. ' + str(type(parent)))
 
