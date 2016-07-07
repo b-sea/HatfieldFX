@@ -48,7 +48,7 @@ def guiKitVersion():
 
 # layout presets
 Vertical = QtGui.QVBoxLayout
-Horizontal = QtGui.QHBoxLayout
+Horizontal = QtGui.QToolBar
 
 
 class ConvertToHFX(object):
@@ -69,8 +69,6 @@ class ConvertToHFX(object):
         self._funcBar = QtGui.QToolBar()
         self._hfx = QtGui.QWidget()
         self._HeaderAndFooter = Vertical()
-        self._Header = Horizontal()
-        self._Footer = Horizontal()
         self._hfx.isHFX = self.isHFX
         self._hfx.functions = self.functions
         applyHFXStyle(self._hfx)
@@ -81,16 +79,15 @@ class ConvertToHFX(object):
             self._layout = Vertical()
 
         # Build layout
-        self._HeaderAndFooter.addLayout(self._Header)
         self._HeaderAndFooter.addWidget(self._funcBar)
-        self._HeaderAndFooter.addLayout(self._layout)
-        self._HeaderAndFooter.addLayout(self._Footer)
+        if isinstance(self._layout, Horizontal):
+            self._HeaderAndFooter.addWidget(self._layout)
+        else:
+            self._HeaderAndFooter.addLayout(self._layout)
+            self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
         # align
-        self._Header.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self._Footer.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._HeaderAndFooter.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self._layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
         if label:
             self.setName(label)
@@ -144,7 +141,7 @@ class ConvertToHFX(object):
         :return:
         """
         widget = instance.validateWidgetLayout(widget)
-        self._Header.addWidget(widget)
+        self._HeaderAndFooter.insertWidget(0, widget)
         self._widgets.append(widget)
 
     def addFooter(self, widget):
@@ -154,7 +151,7 @@ class ConvertToHFX(object):
         :return:
         """
         widget = instance.validateWidgetLayout(widget)
-        self._Footer.addWidget(widget)
+        self._HeaderAndFooter.insertWidget(self._HeaderAndFooter.count(), widget)
         self._widgets.append(widget)
 
     def contextMenuEvent(self, event):
@@ -342,6 +339,6 @@ class ConvertToHFX(object):
 
 
 def applyHFXStyle(widget):
-    widget.setStyle(QtGui.QStyleFactory().create('Plastique'))  #windowsvista
+    widget.setStyle(QtGui.QStyleFactory().create('Plastique'))
     widget.setStyleSheet(instance.hfxStylesheet())
 
