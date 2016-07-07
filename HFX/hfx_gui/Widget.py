@@ -32,4 +32,4 @@ class Overlay(QtGui.QWidget):
         :param event:
         :return:
         """
-        pass
+        raise NotImplementedError
